@@ -1,4 +1,4 @@
-package com.eazybytes.springsecsection1;
+package com.easybytes.springsecsection1;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
