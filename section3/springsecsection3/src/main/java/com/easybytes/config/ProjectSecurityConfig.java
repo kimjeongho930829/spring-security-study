@@ -42,7 +42,7 @@ public class ProjectSecurityConfig {
     }
 
     /**
-     * 스프링 시큐리티 6.3
+     * 스프링 시큐리티 6.3부터 가능
      * @return
      */
     @Bean
