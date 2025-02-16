@@ -1,5 +1,8 @@
 package com.easybytes.easyschool.config;
 
+import com.easybytes.easyschool.handler.CustomAuthenticationFailureHandler;
+import com.easybytes.easyschool.handler.CustomAuthenticationSuccessHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
@@ -15,7 +18,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 
 @Configuration
+@RequiredArgsConstructor
 public class ProjectSecurityConfig {
+
+    private final CustomAuthenticationSuccessHandler authenticationSuccessHandler;
+    private final CustomAuthenticationFailureHandler authenticationFailureHandler;
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -24,7 +31,9 @@ public class ProjectSecurityConfig {
                 .authorizeHttpRequests((requests) -> requests.requestMatchers("/dashboard").authenticated()
                         .requestMatchers("/", "/home", "/holidays/**", "/contact", "/saveMsg",
                                 "/courses", "/about", "/assets/**", "/login/**").permitAll())
-                .formLogin(flc -> flc.loginPage("/login").usernameParameter("userId").passwordParameter("secretPwd").defaultSuccessUrl("/dashboard"))
+                .formLogin(flc -> flc.loginPage("/login").usernameParameter("userId").passwordParameter("secretPwd")
+                        .defaultSuccessUrl("/dashboard").failureUrl("/login?error=true")
+                        .successHandler(authenticationSuccessHandler).failureHandler(authenticationFailureHandler))
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
